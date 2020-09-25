@@ -1,0 +1,19 @@
+language: csharp
+mono: none
+dist: xenial
+dotnet: 3.1
+env:
+  global:
+    - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+    - DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    - secure: "mVKW+NIaEy7I2JgLbpnNtVH204uVAvV/BWip3wMpfbBOT6wCv4EbIIsuaZEIjrk325kB63B0u5MklihoMJ4jORdZwS2ulI//93+UOhVedu4LDJ4kn4RLOrElXLt+74rIxAVoqPok+c56JOLWX6RDiCSQTmWsh026PGHfLi8QOElxoP4QulHLlLgi2q0hbsVe34JmePjHEbiMl4OCh7DYVfFnfJXIznMnyO7KmqHyLUaS5Ji1EpKc64VS0TJNXImpR12jf0f2gXYgKaRo4P6aOOeA5owC71R2EaW9VFGLHd7fFgAltRtrn2YzZVGV0F6ALS9qVUW5HcAhoaYIUVsN1XFDrS2y21zRDH7OBfiLnTuTrntGilU3GjV+Tx/OzjtMOjSPADg63RJuhnMSgFZzO0jm13s0fWaWXsGW7TLeF4efO4UO02+PTpe+kCwCyOedzKUxEF+ZzcRx1COAU6qeTDqzwTbJufvUu9UHwNWH7SJn+mo1SW6sSLatYv9r7+SyB9bqigwbxXjmZ6qbTSlKqPRRHiF5V0fQEvkgV44GcWeWBBc+2ZUIbFmsJzQw+0NhbAkNPZqjok779/ZgU7ubw9SQ98p6QuUoaZo7fmuLHlKQANrBoGAl31OPeirL8osXztOazZjjxMK7YnucubcWPFR4jw72BbvCsLLY+pgMTZE="
+
+script:
+  - pushd src/Tmds.UProbe && dotnet restore && dotnet pack -c Release && popd
+  - VERSION_SUFFIX="$(date +"%y%m%d")-$TRAVIS_BUILD_NUMBER"
+  - dotnet pack src/Tmds.UProbe --configuration Release --version-suffix "$VERSION_SUFFIX" --output src/Tmds.UProbe
+
+after_success:
+  - 'if [ "$TRAVIS_BRANCH" == "main" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+  curl -H "X-NuGet-ApiKey: $NUGET_APIKEY" -T src/Tmds.UProbe/Tmds.UProbe.*.nupkg https://www.myget.org/F/tmds/api/v2/package ;
+     fi'

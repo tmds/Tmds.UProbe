@@ -37,3 +37,22 @@ namespace BashReadline
 }
 
 ```
+
+## CI builds
+
+To use a CI build, add the myget NuGet feed to `NuGet.Config`.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <add key="tmds" value="https://www.myget.org/F/tmds/api/v3/index.json" />
+  </packageSources>
+</configuration>
+```
+
+Add a package reference to your project.
+
+```sh
+dotnet add package Tmds.UProbe --version '0.1.0-*'
+```

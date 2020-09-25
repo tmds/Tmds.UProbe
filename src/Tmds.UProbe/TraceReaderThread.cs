@@ -104,7 +104,7 @@ namespace Tmds.UProbe
             var reader = new SequenceReader<byte>(line);
             if (reader.TryReadTo(out ReadOnlySequence<byte> lineStart, _sessionPrefix))
             {
-                body = reader.UnreadSequence;
+                body = reader.Sequence.Slice(reader.Position);
                 int headerLength = (int)reader.Consumed - _sessionPrefix.Length;
                 lineStart.CopyTo(header);
                 if (lineStart.Length < header.Length)
