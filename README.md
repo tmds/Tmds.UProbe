@@ -18,7 +18,7 @@ namespace BashReadline
     {
         static async Task Main(string[] args)
         {
-            var session = new UProbeSession("bashreadline");
+            using var session = new UProbeSession("bashreadline");
 
             session.AddReturnProbe("myprobe", "/usr/bin/bash", "readline", new [] { FetchArg.MemoryAt(FetchArg.ReturnValue).AsString() });
 
@@ -30,8 +30,6 @@ namespace BashReadline
                 string line = entry.GetStringArg(0);
                 Console.WriteLine($"bash [{tid}]: {line}");
             }
-
-            session.Dispose();
         }
     }
 }
